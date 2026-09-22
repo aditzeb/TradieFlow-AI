@@ -1,3 +1,5 @@
+<img width="1919" height="904" alt="Screenshot 2026-09-22 153927" src="https://github.com/user-attachments/assets/1e895922-13bc-489e-a843-86bb40b339d8" />
+
 # TradieFlow AI
 
 [![Live Production](https://img.shields.io/badge/Production-Live%20on%20Firebase-00C853?style=for-the-badge&logo=firebase)](https://tradieflow-ai.web.app)

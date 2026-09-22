@@ -241,13 +241,15 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
                       ),
                       child: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(
-                              'assets/images/ExoLogo_web.png',
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.cover,
+                          SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.asset(
+                                'assets/images/ExoLogo_web_v2.png',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),

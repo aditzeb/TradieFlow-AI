@@ -222,13 +222,15 @@ class _WorkspaceState extends State<_Workspace> {
           children: [
             Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/images/ExoLogo_web.png',
-                    width: 52,
-                    height: 52,
-                    fit: BoxFit.cover,
+                SizedBox(
+                  width: 52,
+                  height: 52,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/ExoLogo_web_v2.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),

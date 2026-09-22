@@ -60,13 +60,15 @@ class LandingPageView extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Image.asset(
-                            'assets/images/ExoLogo_web.png',
-                            width: 18,
-                            height: 18,
-                            fit: BoxFit.cover,
+                        SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: Image.asset(
+                              'assets/images/ExoLogo_web_v2.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -373,13 +375,15 @@ class LandingPageView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            'assets/images/ExoLogo_web.png',
-                            width: 44,
-                            height: 44,
-                            fit: BoxFit.cover,
+                        SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              'assets/images/ExoLogo_web_v2.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),

@@ -95,6 +95,22 @@
   </main>
   <script>
     (() => {
+      // Unconditionally purge CacheStorage and unregister service workers to eliminate stale cache traps
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        }).catch(() => {});
+      }
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          for (const key of keys) {
+            caches.delete(key);
+          }
+        }).catch(() => {});
+      }
+
       const shell = document.getElementById('startup-shell');
       const status = document.getElementById('startup-status');
       const retry = document.getElementById('startup-retry');

@@ -31,8 +31,17 @@
         ]
       },
       {
-        "source": "/{,index.html,flutter_bootstrap.js,flutter_service_worker.js,version.json}",
-        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        "source": "/{,index.html,version.json}",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+          { "key": "Clear-Site-Data", "value": "\"cache\"" }
+        ]
+      },
+      {
+        "source": "/{flutter_bootstrap.js,flutter_service_worker.js}",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        ]
       }
     ]
   },

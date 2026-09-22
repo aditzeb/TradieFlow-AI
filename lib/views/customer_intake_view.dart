@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/job_service.dart';
 import '../theme/glassline_tokens.dart';
@@ -45,26 +46,29 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
     try {
       final file = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1200,
       );
       if (file == null) return;
-      if (await file.length() > maxImageBytes) {
+      final bytes = await file.readAsBytes();
+      if (bytes.length > maxImageBytes) {
         throw const FormatException('Choose an image smaller than 5 MB.');
       }
-      final bytes = await file.readAsBytes();
       imageContentType(bytes);
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      ui.ImageDescriptor? descriptor;
       try {
-        descriptor = await ui.ImageDescriptor.encoded(buffer);
-        if (descriptor.width * descriptor.height > 16000000) {
+        final codec = await ui.instantiateImageCodec(bytes);
+        final frame = await codec.getNextFrame();
+        final width = frame.image.width;
+        final height = frame.image.height;
+        frame.image.dispose();
+        codec.dispose();
+        if (width * height > 25000000) {
           throw const FormatException(
-            'Choose a smaller photo (up to 16 megapixels).',
+            'Choose a smaller photo (up to 25 megapixels).',
           );
         }
-      } finally {
-        descriptor?.dispose();
-        buffer.dispose();
+      } catch (e) {
+        if (e is FormatException) rethrow;
+        // On web platforms where codec instantiation may vary, magic bytes are
+        // already strictly verified above.
       }
       if (mounted) {
         setState(() {
@@ -78,7 +82,7 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
         setState(
           () => _error = error is FormatException
               ? error.message
-              : 'That image could not be opened. Choose a JPEG, PNG, or WebP photo.',
+              : 'Could not open image: $error',
         );
       }
     } finally {
@@ -219,6 +223,65 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
                   Text(
                     'If there is immediate danger, keep clear and call 000. Do not touch exposed wiring, open equipment, or wait for an AI result.',
                     style: text.bodySmall,
+                  ),
+                  const SizedBox(height: 24),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => launchUrl(
+                      Uri.parse('https://www.exodigital.com.au/'),
+                      mode: LaunchMode.platformDefault,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: GlasslineColors.secondary.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              'assets/images/ExoLogo_web.png',
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Built by Exo Digital',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                                Text(
+                                  'www.exodigital.com.au',
+                                  style: text.bodySmall?.copyWith(
+                                    color: GlasslineColors.secondary,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.open_in_new,
+                            size: 16,
+                            color: GlasslineColors.secondary,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               );

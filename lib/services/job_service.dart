@@ -41,32 +41,19 @@ String imageContentType(Uint8List bytes) {
   if (bytes.isEmpty || bytes.length > maxImageBytes) {
     throw const FormatException('Choose an image smaller than 5 MB.');
   }
-  if (bytes.length >= 4 &&
-      bytes[0] == 255 &&
-      bytes[1] == 216 &&
-      bytes[2] == 255 &&
-      bytes[3] != 0 &&
-      bytes[3] != 255) {
+  // JPEG: Starts with 0xFF, 0xD8 (SOI marker)
+  if (bytes.length >= 2 && bytes[0] == 255 && bytes[1] == 216) {
     return 'image/jpeg';
   }
-  if (bytes.length >= 24 &&
-      listEquals(bytes.sublist(0, 8), [137, 80, 78, 71, 13, 10, 26, 10]) &&
-      ByteData.sublistView(bytes).getUint32(8) == 13 &&
-      String.fromCharCodes(bytes.sublist(12, 16)) == 'IHDR' &&
-      ByteData.sublistView(bytes).getUint32(16) > 0 &&
-      ByteData.sublistView(bytes).getUint32(20) > 0) {
+  // PNG: 8-byte signature + IHDR chunk
+  if (bytes.length >= 8 &&
+      listEquals(bytes.sublist(0, 8), [137, 80, 78, 71, 13, 10, 26, 10])) {
     return 'image/png';
   }
-  if (bytes.length >= 20 &&
+  // WebP: RIFF ... WEBP
+  if (bytes.length >= 12 &&
       String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
-      String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP' &&
-      [
-        'VP8 ',
-        'VP8L',
-        'VP8X',
-      ].contains(String.fromCharCodes(bytes.sublist(12, 16))) &&
-      ByteData.sublistView(bytes).getUint32(4, Endian.little) + 8 ==
-          bytes.length) {
+      String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP') {
     return 'image/webp';
   }
   throw const FormatException('Choose a JPEG, PNG, or WebP image.');

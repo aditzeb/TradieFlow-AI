@@ -1,13 +1,15 @@
 # TradieFlow AI
 
 [![Live Production](https://img.shields.io/badge/Production-Live%20on%20Firebase-00C853?style=for-the-badge&logo=firebase)](https://tradieflow-ai.web.app)
+[![Built by Exo Digital](https://img.shields.io/badge/Built%20by-Exo%20Digital-0F1419?style=for-the-badge)](https://www.exodigital.com.au/)
 [![Flutter](https://img.shields.io/badge/Flutter-3.38.5%20Web-02569B?style=for-the-badge&logo=flutter)](https://flutter.dev)
 [![Google Cloud](https://img.shields.io/badge/Cloud%20Functions-2nd%20Gen%20(Sydney)-4285F4?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/functions)
 [![OpenRouter](https://img.shields.io/badge/AI%20Engine-Gemini%202.0%20Flash-7C3AED?style=for-the-badge)](https://openrouter.ai)
 
-**TradieFlow AI** is a real-time, photo-led trade triage and dispatch platform designed for Australian trades (HVAC, plumbing, electrical, and appliance repair). It transforms unstructured customer photo submissions into structured, actionable trade diagnostic records—featuring automated OCR model plate recognition, hazard identification, Australian Standards (AS/NZS) safety guidance, and itemized AUD quotes.
+**TradieFlow AI** is a real-time, photo-led trade triage and dispatch platform designed for Australian trades (HVAC, plumbing, electrical, and appliance repair), engineered by [Exo Digital](https://www.exodigital.com.au/). It transforms unstructured customer photo submissions into structured, actionable trade diagnostic records—featuring automated OCR model plate recognition, hazard identification, Australian Standards (AS/NZS) safety guidance, and itemized AUD quotes.
 
 🌐 **Production Application:** [https://tradieflow-ai.web.app](https://tradieflow-ai.web.app)  
+🏢 **Engineered By:** [Exo Digital](https://www.exodigital.com.au/)  
 📦 **Firebase Project ID:** `tradieflow-ai`
 
 ---

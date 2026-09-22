@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'firebase_options.dart';
 import 'services/job_service.dart';
@@ -196,6 +197,122 @@ class _WorkspaceState extends State<_Workspace> {
     ),
   );
 
+  void _aboutExoDigital(BuildContext context) => showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentPadding: const EdgeInsets.all(28),
+      content: SizedBox(
+        width: 440,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/ExoLogo_web.png',
+                    width: 52,
+                    height: 52,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'TradieFlow AI',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: GlasslineColors.primary.withValues(
+                                alpha: 0.08,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'BY EXO DIGITAL',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: GlasslineColors.primary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'v1.0.0',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: GlasslineColors.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Intelligent Australian trade intake, automated damage classification, safety triage, and real-time dispatcher dispatch.',
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                color: GlasslineColors.primary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Engineered by Exo Digital, delivering industry-leading digital product design, AI solutions, and engineering excellence.',
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.5,
+                color: GlasslineColors.secondary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => launchUrl(
+                  Uri.parse('https://www.exodigital.com.au/'),
+                  mode: LaunchMode.platformDefault,
+                ),
+                icon: const Icon(Icons.language, size: 18),
+                label: const Text('Visit exodigital.com.au'),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
+    ),
+  );
+
   Future<void> _signOut() async {
     setState(() => _signingOut = true);
     try {
@@ -279,6 +396,11 @@ class _WorkspaceState extends State<_Workspace> {
                   intake ? Icons.dashboard_outlined : Icons.add_circle_outline,
                 ),
               ),
+            IconButton(
+              tooltip: 'About Exo Digital',
+              onPressed: () => _aboutExoDigital(context),
+              icon: const Icon(Icons.info_outline),
+            ),
             if (widget.service == null)
               IconButton(
                 tooltip: 'Firebase setup',

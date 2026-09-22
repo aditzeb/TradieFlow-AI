@@ -140,10 +140,10 @@ void main() {
           .first,
     );
     expect(button.onPressed, isNull);
-    await tester.tap(find.byTooltip('Firebase setup'));
+    await tester.tap(find.byTooltip('Workspace setup'));
     await tester.pumpAndSettle();
-    expect(find.text('Connect Firebase'), findsOneWidget);
-    expect(find.textContaining('OPENROUTER_API_KEY'), findsOneWidget);
+    expect(find.text('Workspace Configuration'), findsOneWidget);
+    expect(find.textContaining('technical documentation'), findsOneWidget);
   });
 
   testWidgets(

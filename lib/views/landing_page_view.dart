@@ -294,7 +294,7 @@ class LandingPageView extends StatelessWidget {
                     number: '02',
                     title: 'Vision AI Analyzes & Triage',
                     description:
-                        'Gemini 2.0 Flash inspects the image, reads the manufacturer model plate (OCR), checks AS/NZS safety codes, and prepares a parts checklist.',
+                        'Computer vision and diagnostic AI inspects the image, reads the manufacturer model plate (OCR), checks AS/NZS safety codes, and prepares a parts checklist.',
                     icon: Icons.psychology_outlined,
                   ),
                   _stepCard(
@@ -357,7 +357,7 @@ class LandingPageView extends StatelessWidget {
                     icon: Icons.sync_outlined,
                     title: 'Real-time Dispatch Queue',
                     description:
-                        'Incoming jobs stream live to dispatchers via Firebase Firestore with urgency filtering and status tracking.',
+                        'Incoming jobs stream live to dispatchers in real time with urgency filtering and status tracking.',
                   ),
                 ],
               ),

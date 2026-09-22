@@ -464,7 +464,7 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
                                         () => _consent = value ?? false,
                                       ),
                                 title: Text(
-                                  'I consent to this photo and description being stored in Firebase and sent through OpenRouter to an AI provider for triage. Processing may occur outside Australia. I have permission to share them.',
+                                  'I consent to this photo and description being securely stored and processed by TradieFlow AI for triage. Processing may occur outside Australia. I have permission to share them.',
                                   style: text.bodySmall,
                                 ),
                               ),
@@ -519,7 +519,7 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
                               if (widget.service == null) ...[
                                 const SizedBox(height: 12),
                                 Text(
-                                  'Preview only. Connect Firebase to submit a real request.',
+                                  'Preview only. Live services must be connected to submit a real request.',
                                   style: text.bodySmall,
                                 ),
                               ],

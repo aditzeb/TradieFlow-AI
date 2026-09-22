@@ -106,7 +106,7 @@ class _StartupState extends State<_Startup> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Check your connection, Firebase web configuration, and that anonymous authentication is enabled. No request has been submitted.',
+                      'Check your connection and workspace configuration. No request has been submitted.',
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
@@ -184,18 +184,15 @@ class _WorkspaceState extends State<_Workspace> {
   void _configuration() => showDialog<void>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Connect Firebase'),
+      title: const Text('Workspace Configuration'),
       content: const SizedBox(
         width: 520,
         child: SingleChildScrollView(
           child: SelectionArea(
             child: Text(
-              'This is a UI preview. No sample requests or AI results are presented as real.\n\n'
-              'Register a web app in the tradieflow-ai Firebase project and enable Anonymous authentication. Pass the web app values at build time:\n\n'
-              'flutter run -d chrome --dart-define=FIREBASE_API_KEY=<web-api-key> --dart-define=FIREBASE_APP_ID=<web-app-id>\n\n'
-              'For local emulators:\nflutter run -d chrome --dart-define=USE_FIREBASE_EMULATORS=true\n\n'
-              'Deploy the included security rules, indexes, and Sydney Cloud Function. Store OPENROUTER_API_KEY in Firebase Secret Manager, never in the Flutter app.\n\n'
-              'Team dispatch access requires an Email/Password account with the dispatcher custom claim set to true by a trusted administrator. Other accounts can only read their own requests.',
+              'This is an interactive UI workspace preview.\n\n'
+              'To connect live cloud services, real-time dispatch streams, and automated AI triage, refer to the technical documentation and deployment guide in the project repository README.md.\n\n'
+              'Dispatch queue access requires an authorized team account with dispatcher privileges set by an administrator. Customers can only view their own requests.',
             ),
           ),
         ),
@@ -476,7 +473,7 @@ class _WorkspaceState extends State<_Workspace> {
             ),
             if (widget.service == null)
               IconButton(
-                tooltip: 'Firebase setup',
+                tooltip: 'Workspace setup',
                 onPressed: _configuration,
                 icon: const Icon(Icons.settings_outlined),
               )
@@ -519,7 +516,7 @@ class _WorkspaceState extends State<_Workspace> {
                     spacing: 12,
                     children: [
                       const Text(
-                        'PREVIEW WORKSPACE · FIREBASE NOT CONNECTED',
+                        'PREVIEW WORKSPACE · OFFLINE PREVIEW',
                         style: TextStyle(
                           fontFamily: 'Geist Mono',
                           color: Colors.white,

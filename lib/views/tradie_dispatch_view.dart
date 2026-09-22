@@ -200,10 +200,10 @@ class _TradieDispatchViewState extends State<TradieDispatchView> {
                                         ? 'CONNECTING'
                                         : snapshot.data!.metadata.isFromCache
                                         ? 'CACHED · RECONNECTING'
-                                        : 'LIVE FIRESTORE FEED',
+                                        : 'LIVE DISPATCH FEED',
                                   ),
                                   Text(
-                                    'SYDNEY · AUSTRALIA-SOUTHEAST1',
+                                    'SYDNEY, NSW · DISPATCH REGION',
                                     style: text.labelSmall,
                                   ),
                                 ],
@@ -258,7 +258,7 @@ class _TradieDispatchViewState extends State<TradieDispatchView> {
                           context,
                           Icons.cloud_off_outlined,
                           'The live feed is unavailable',
-                          'Check your connection and Firebase access. Your existing requests have not been changed.',
+                          'Check your connection and server access. Your existing requests have not been changed.',
                           retry: true,
                         )
                       else if (widget.service == null)
@@ -266,7 +266,7 @@ class _TradieDispatchViewState extends State<TradieDispatchView> {
                           context,
                           Icons.link_off,
                           'Connect your workspace',
-                          'Firebase is not configured. Preview the intake form, then connect your project to start receiving real requests.',
+                          'Live services are not configured. Preview the intake form or configure your backend to start receiving real requests.',
                         )
                       else if (!snapshot.hasData)
                         const Padding(

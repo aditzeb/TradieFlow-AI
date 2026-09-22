@@ -1,0 +1,30 @@
+{
+  "name": "tradieflow-functions",
+  "private": true,
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "engines": { "node": "22" },
+  "scripts": {
+    "lint": "eslint src test eslint.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test test/backend.test.cjs",
+    "test:rules": "npm run build && firebase emulators:exec --config ../firebase.json --project demo-tradieflow-ai --only auth,firestore,storage \"node --test test/rules.test.cjs\""
+  },
+  "dependencies": {
+    "firebase-admin": "^14.4.0",
+    "firebase-functions": "^7.4.0",
+    "openai": "^7.20.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "@types/node": "^22.19.0",
+    "eslint": "^10.11.0",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.30.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.70.0"
+  }
+}

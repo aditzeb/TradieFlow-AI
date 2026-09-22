@@ -1,0 +1,47 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs22",
+      "ignore": ["node_modules", ".git", ".firebase", "*.log", ".env.local", ".env.*.local", ".secret*", "test"],
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint", "npm --prefix \"$RESOURCE_DIR\" run typecheck", "npm --prefix \"$RESOURCE_DIR\" run build"]
+    }
+  ],
+  "firestore": {
+    "database": "(default)",
+    "location": "australia-southeast1",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": { "rules": "storage.rules" },
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/*.test.cjs", "generate-icons.cjs"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Permissions-Policy", "value": "camera=(self), microphone=(), geolocation=()" },
+          { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+        ]
+      },
+      {
+        "source": "/{,index.html,flutter_bootstrap.js,flutter_service_worker.js,version.json}",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      }
+    ]
+  },
+  "emulators": {
+    "auth": { "host": "127.0.0.1", "port": 9099 },
+    "firestore": { "host": "127.0.0.1", "port": 8080 },
+    "storage": { "host": "127.0.0.1", "port": 9199 },
+    "functions": { "host": "127.0.0.1", "port": 5001 },
+    "ui": { "enabled": true, "host": "127.0.0.1", "port": 4000 },
+    "singleProjectMode": true
+  }
+}

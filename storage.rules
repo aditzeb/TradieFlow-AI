@@ -1,0 +1,25 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function dispatcher() {
+      return signedIn() && request.auth.token.get('dispatcher', false) == true;
+    }
+    function ownsPhoto() {
+      return signedIn() && resource.metadata.ownerId == request.auth.uid;
+    }
+    match /jobs/{jobId}/photo.jpg {
+      allow create: if signedIn() && resource == null && jobId.matches('^[A-Za-z0-9_-]{1,128}$') &&
+        request.resource.metadata.keys().hasAll(['ownerId']) &&
+        request.resource.metadata.ownerId == request.auth.uid &&
+        request.resource.size > 0 && request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType in ['image/jpeg', 'image/png', 'image/webp'] &&
+        !firestore.exists(/databases/(default)/documents/triageJobs/$(jobId));
+      allow read: if ownsPhoto() || dispatcher();
+      allow update: if false;
+      allow delete: if ownsPhoto() && !firestore.exists(/databases/(default)/documents/triageJobs/$(jobId));
+    }
+  }
+}

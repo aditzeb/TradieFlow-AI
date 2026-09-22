@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Flutter analyze",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["analyze"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter test",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["test"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter web build",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "web", "--pwa-strategy=none"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Functions lint",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--prefix", "functions", "run", "lint"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Functions typecheck",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--prefix", "functions", "run", "typecheck"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Functions test",
+      "type": "shell",
+      "command": "npm",
+      "args": ["--prefix", "functions", "run", "test"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

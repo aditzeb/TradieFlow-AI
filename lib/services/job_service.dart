@@ -37,15 +37,38 @@ String? validatePostcode(String? value, String state) {
       : null;
 }
 
-String imageContentType(Uint8List bytes) {
-  if (bytes.isEmpty || bytes.length > maxImageBytes) {
-    throw const FormatException('Choose an image smaller than 5 MB.');
+String imageContentType(
+  Uint8List bytes, {
+  String? mimeType,
+  String? filename,
+}) {
+  if (bytes.isEmpty) {
+    throw const FormatException('Selected file is empty. Please select a photo.');
+  }
+  if (bytes.length > maxImageBytes) {
+    final mb = (bytes.length / (1024 * 1024)).toStringAsFixed(1);
+    throw FormatException(
+      'Photo is too large ($mb MB). Please choose an image up to 5 MB.',
+    );
+  }
+  // Check for iPhone HEIC/HEIF signature
+  if (bytes.length >= 12 &&
+      String.fromCharCodes(bytes.sublist(4, 8)) == 'ftyp') {
+    final brand = String.fromCharCodes(bytes.sublist(8, 12)).toLowerCase();
+    if (brand.contains('heic') ||
+        brand.contains('mif1') ||
+        brand.contains('msf1') ||
+        brand.contains('heix')) {
+      throw const FormatException(
+        'iPhone HEIC format detected. Please select a JPEG, PNG, or WebP photo (or take a photo directly).',
+      );
+    }
   }
   // JPEG: Starts with 0xFF, 0xD8 (SOI marker)
   if (bytes.length >= 2 && bytes[0] == 255 && bytes[1] == 216) {
     return 'image/jpeg';
   }
-  // PNG: 8-byte signature + IHDR chunk
+  // PNG: 8-byte signature
   if (bytes.length >= 8 &&
       listEquals(bytes.sublist(0, 8), [137, 80, 78, 71, 13, 10, 26, 10])) {
     return 'image/png';
@@ -55,6 +78,25 @@ String imageContentType(Uint8List bytes) {
       String.fromCharCodes(bytes.sublist(0, 4)) == 'RIFF' &&
       String.fromCharCodes(bytes.sublist(8, 12)) == 'WEBP') {
     return 'image/webp';
+  }
+  // Fallback to mimeType if provided by browser picker
+  if (mimeType != null && mimeType.isNotEmpty) {
+    final lower = mimeType.toLowerCase();
+    if (lower.contains('jpeg') || lower.contains('jpg')) return 'image/jpeg';
+    if (lower.contains('png')) return 'image/png';
+    if (lower.contains('webp')) return 'image/webp';
+  }
+  // Fallback to filename extension
+  if (filename != null && filename.isNotEmpty) {
+    final lower = filename.toLowerCase();
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.heic') || lower.endsWith('.heif')) {
+      throw const FormatException(
+        'HEIC photos are not supported directly in the browser. Please upload as JPEG, PNG, or WebP.',
+      );
+    }
   }
   throw const FormatException('Choose a JPEG, PNG, or WebP image.');
 }

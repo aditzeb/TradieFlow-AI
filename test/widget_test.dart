@@ -88,29 +88,47 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('TradieFlow'), findsOneWidget);
       expect(find.textContaining('PREVIEW WORKSPACE'), findsOneWidget);
-      if (size.width < 800) {
-        expect(
-          find.text('A clearer picture.\nA faster response.'),
-          findsOneWidget,
-        );
+      expect(find.textContaining('Snap a photo.'), findsOneWidget);
+      expect(find.textContaining('BY EXO DIGITAL'), findsOneWidget);
+
+      // Navigate to Intake
+      if (size.width < 700) {
+        await tester.tap(find.byTooltip('Open intake form'));
+      } else {
+        await tester.tap(find.text('Triage'));
+      }
+      await tester.pumpAndSettle();
+      expect(find.text('Instant Trade Triage'), findsOneWidget);
+
+      // Navigate to Dispatch
+      if (size.width < 700) {
         await tester.tap(find.byTooltip('Open dispatch queue'));
       } else {
-        expect(find.text('Active Inbound Queue'), findsOneWidget);
-        await tester.tap(find.text('New request'));
-        await tester.pumpAndSettle();
-        expect(find.text('Instant Trade Triage'), findsOneWidget);
         await tester.tap(find.text('Dispatch'));
       }
       await tester.pumpAndSettle();
       expect(find.text('Active Inbound Queue'), findsOneWidget);
+
+      // Dispatch 'New request' button returns to Intake
+      await tester.tap(find.text('New request'));
+      await tester.pumpAndSettle();
+      expect(find.text('Instant Trade Triage'), findsOneWidget);
+
+      // Return to Home landing page
+      if (size.width < 700) {
+        await tester.tap(find.byTooltip('Home landing page'));
+      } else {
+        await tester.tap(find.text('Home'));
+      }
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Snap a photo.'), findsOneWidget);
     });
   }
 
   testWidgets('Preview does not submit or invent live results', (tester) async {
-    await tester.pumpWidget(const TradieFlowApp());
+    await tester.pumpWidget(const TradieFlowApp(initialTab: WorkspaceTab.intake));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('New request'));
-    await tester.pumpAndSettle();
+    expect(find.text('Instant Trade Triage'), findsOneWidget);
     final button = tester.widget<ElevatedButton>(
       find
           .ancestor(

@@ -10,6 +10,7 @@ import 'services/job_service.dart';
 import 'theme/glassline_theme.dart';
 import 'theme/glassline_tokens.dart';
 import 'views/customer_intake_view.dart';
+import 'views/landing_page_view.dart';
 import 'views/tradie_dispatch_view.dart';
 
 void main() {
@@ -124,9 +125,12 @@ class _StartupState extends State<_Startup> {
   }
 }
 
+enum WorkspaceTab { landing, intake, dispatch }
+
 class TradieFlowApp extends StatelessWidget {
-  const TradieFlowApp({super.key, this.service});
+  const TradieFlowApp({super.key, this.service, this.initialTab});
   final JobService? service;
+  final WorkspaceTab? initialTab;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -134,13 +138,14 @@ class TradieFlowApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
     theme: buildGlasslineTheme(),
     home: service == null
-        ? const _Workspace()
+        ? _Workspace(initialTab: initialTab)
         : ListenableBuilder(
             listenable: service!,
             builder: (context, _) => service!.isReady
                 ? _Workspace(
                     key: ValueKey('${service!.uid}:${service!.isDispatcher}'),
                     service: service,
+                    initialTab: initialTab,
                   )
                 : const Scaffold(
                     body: Center(
@@ -158,16 +163,23 @@ class TradieFlowApp extends StatelessWidget {
 }
 
 class _Workspace extends StatefulWidget {
-  const _Workspace({super.key, this.service});
+  const _Workspace({super.key, this.service, this.initialTab});
   final JobService? service;
+  final WorkspaceTab? initialTab;
 
   @override
   State<_Workspace> createState() => _WorkspaceState();
 }
 
 class _WorkspaceState extends State<_Workspace> {
-  bool? _intake;
+  late WorkspaceTab _tab;
   bool _signingOut = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tab = widget.initialTab ?? WorkspaceTab.landing;
+  }
 
   void _configuration() => showDialog<void>(
     context: context,
@@ -335,67 +347,126 @@ class _WorkspaceState extends State<_Workspace> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      final intake = _intake ?? constraints.maxWidth < 800;
-      final compact = constraints.maxWidth < 600;
+      final compact = constraints.maxWidth < 700;
       return Scaffold(
         appBar: AppBar(
           toolbarHeight: 80,
           titleSpacing: compact ? 16 : 32,
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: GlasslineColors.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.handyman_outlined,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Flexible(
-                child: Text(
-                  'TradieFlow',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.5,
+          title: InkWell(
+            onTap: () => setState(() => _tab = WorkspaceTab.landing),
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: GlasslineColors.primary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.handyman_outlined,
+                      size: 20,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 12),
+                  const Flexible(
+                    child: Text(
+                      'TradieFlow',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                  ),
+                  if (!compact) ...[
+                    const SizedBox(width: 8),
+                    Text('AI', style: Theme.of(context).textTheme.labelSmall),
+                  ],
+                ],
               ),
-              if (!compact) ...[
-                const SizedBox(width: 8),
-                Text('AI', style: Theme.of(context).textTheme.labelSmall),
-              ],
-            ],
+            ),
           ),
           actions: [
             if (!compact) ...[
               TextButton.icon(
-                onPressed: () => setState(() => _intake = false),
-                icon: const Icon(Icons.dashboard_outlined, size: 18),
-                label: const Text('Dispatch'),
-              ),
-              TextButton.icon(
-                onPressed: () => setState(() => _intake = true),
-                icon: const Icon(Icons.add_circle_outline, size: 18),
-                label: const Text('Intake'),
-              ),
-            ] else
-              IconButton(
-                tooltip: intake ? 'Open dispatch queue' : 'Open intake form',
-                onPressed: () => setState(() => _intake = !intake),
+                onPressed: () => setState(() => _tab = WorkspaceTab.landing),
                 icon: Icon(
-                  intake ? Icons.dashboard_outlined : Icons.add_circle_outline,
+                  _tab == WorkspaceTab.landing ? Icons.home : Icons.home_outlined,
+                  size: 18,
+                  color: _tab == WorkspaceTab.landing ? GlasslineColors.tertiary : null,
+                ),
+                label: Text(
+                  'Home',
+                  style: TextStyle(
+                    fontWeight: _tab == WorkspaceTab.landing ? FontWeight.w700 : FontWeight.w500,
+                    color: _tab == WorkspaceTab.landing ? GlasslineColors.tertiary : null,
+                  ),
                 ),
               ),
+              TextButton.icon(
+                onPressed: () => setState(() => _tab = WorkspaceTab.intake),
+                icon: Icon(
+                  _tab == WorkspaceTab.intake ? Icons.add_circle : Icons.add_circle_outline,
+                  size: 18,
+                  color: _tab == WorkspaceTab.intake ? GlasslineColors.tertiary : null,
+                ),
+                label: Text(
+                  'Triage',
+                  style: TextStyle(
+                    fontWeight: _tab == WorkspaceTab.intake ? FontWeight.w700 : FontWeight.w500,
+                    color: _tab == WorkspaceTab.intake ? GlasslineColors.tertiary : null,
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () => setState(() => _tab = WorkspaceTab.dispatch),
+                icon: Icon(
+                  _tab == WorkspaceTab.dispatch ? Icons.dashboard : Icons.dashboard_outlined,
+                  size: 18,
+                  color: _tab == WorkspaceTab.dispatch ? GlasslineColors.tertiary : null,
+                ),
+                label: Text(
+                  'Dispatch',
+                  style: TextStyle(
+                    fontWeight: _tab == WorkspaceTab.dispatch ? FontWeight.w700 : FontWeight.w500,
+                    color: _tab == WorkspaceTab.dispatch ? GlasslineColors.tertiary : null,
+                  ),
+                ),
+              ),
+            ] else ...[
+              IconButton(
+                tooltip: 'Home landing page',
+                onPressed: () => setState(() => _tab = WorkspaceTab.landing),
+                icon: Icon(
+                  _tab == WorkspaceTab.landing ? Icons.home : Icons.home_outlined,
+                  color: _tab == WorkspaceTab.landing ? GlasslineColors.tertiary : null,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Open intake form',
+                onPressed: () => setState(() => _tab = WorkspaceTab.intake),
+                icon: Icon(
+                  _tab == WorkspaceTab.intake ? Icons.add_circle : Icons.add_circle_outline,
+                  color: _tab == WorkspaceTab.intake ? GlasslineColors.tertiary : null,
+                ),
+              ),
+              IconButton(
+                tooltip: 'Open dispatch queue',
+                onPressed: () => setState(() => _tab = WorkspaceTab.dispatch),
+                icon: Icon(
+                  _tab == WorkspaceTab.dispatch ? Icons.dashboard : Icons.dashboard_outlined,
+                  color: _tab == WorkspaceTab.dispatch ? GlasslineColors.tertiary : null,
+                ),
+              ),
+            ],
             IconButton(
               tooltip: 'About Exo Digital',
               onPressed: () => _aboutExoDigital(context),
@@ -465,12 +536,18 @@ class _WorkspaceState extends State<_Workspace> {
                 ),
               Expanded(
                 child: IndexedStack(
-                  index: intake ? 0 : 1,
+                  index: _tab == WorkspaceTab.landing
+                      ? 0
+                      : (_tab == WorkspaceTab.intake ? 1 : 2),
                   children: [
+                    LandingPageView(
+                      onStartTriage: () => setState(() => _tab = WorkspaceTab.intake),
+                      onOpenDispatch: () => setState(() => _tab = WorkspaceTab.dispatch),
+                    ),
                     CustomerIntakeView(service: widget.service),
                     TradieDispatchView(
                       service: widget.service,
-                      onNewRequest: () => setState(() => _intake = true),
+                      onNewRequest: () => setState(() => _tab = WorkspaceTab.intake),
                     ),
                   ],
                 ),

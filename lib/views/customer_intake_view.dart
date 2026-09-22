@@ -41,18 +41,15 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage([ImageSource source = ImageSource.gallery]) async {
     setState(() => _picking = true);
     try {
       final file = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
+        source: source,
       );
       if (file == null) return;
       final bytes = await file.readAsBytes();
-      if (bytes.length > maxImageBytes) {
-        throw const FormatException('Choose an image smaller than 5 MB.');
-      }
-      imageContentType(bytes);
+      imageContentType(bytes, mimeType: file.mimeType, filename: file.name);
       try {
         final codec = await ui.instantiateImageCodec(bytes);
         final frame = await codec.getNextFrame();
@@ -67,8 +64,6 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
         }
       } catch (e) {
         if (e is FormatException) rethrow;
-        // On web platforms where codec instantiation may vary, magic bytes are
-        // already strictly verified above.
       }
       if (mounted) {
         setState(() {
@@ -82,7 +77,7 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
         setState(
           () => _error = error is FormatException
               ? error.message
-              : 'Could not open image: $error',
+              : 'Could not open photo: $error',
         );
       }
     } finally {

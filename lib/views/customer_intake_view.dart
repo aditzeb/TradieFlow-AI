@@ -116,12 +116,16 @@ class _CustomerIntakeViewState extends State<CustomerIntakeView> {
       if (mounted) {
         setState(() => _result = widget.service!.watchJob(_pending!.id));
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        setState(
-          () => _error =
-              'Submission could not be confirmed. Check your connection and retry this same request; it will not create a duplicate.',
-        );
+        String message =
+            'Submission could not be confirmed. Check your connection and retry this same request; it will not create a duplicate.';
+        if (e is FirebaseException && e.message != null && e.message!.isNotEmpty) {
+          message = 'Submission failed (${e.code}): ${e.message}';
+        } else if (e is FormatException && e.message.isNotEmpty) {
+          message = e.message;
+        }
+        setState(() => _error = message);
       }
     } finally {
       if (mounted) setState(() => _busy = false);

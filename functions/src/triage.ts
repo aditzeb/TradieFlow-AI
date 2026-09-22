@@ -140,9 +140,10 @@ export function buildMessages(job: JobInput, image: string): OpenAI.Chat.Complet
 }
 
 export async function analyzeJob(job: JobInput, image: string, apiKey: string, model: string) {
-  if (!apiKey || !/^[A-Za-z0-9][A-Za-z0-9/_.:-]{0,199}$/.test(model)) throw new Error("Invalid model configuration");
+  const cleanApiKey = (apiKey || "").replace(/^\uFEFF/, "").trim();
+  if (!cleanApiKey || !/^[A-Za-z0-9][A-Za-z0-9/_.:-]{0,199}$/.test(model)) throw new Error("Invalid model configuration");
   const client = new OpenAI({
-    apiKey,
+    apiKey: cleanApiKey,
     baseURL: "https://openrouter.ai/api/v1",
     defaultHeaders: { "HTTP-Referer": "https://tradieflow-ai.web.app", "X-Title": "TradieFlow AI" },
     timeout: 45_000,

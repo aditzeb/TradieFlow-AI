@@ -132,9 +132,10 @@ test("OpenRouter request is bounded, model configurable, and output locally vali
   const mockedFetch = t.mock.method(globalThis, "fetch", async (url, options) => {
     assert.equal(String(url), "https://openrouter.ai/api/v1/chat/completions");
     requestBody = JSON.parse(options.body);
+    assert.equal(options.headers.get?.("authorization") ?? options.headers.authorization ?? options.headers.Authorization, "Bearer test-key");
     return new globalThis.Response(JSON.stringify({ choices: [choice] }), { status: 200, headers: { "Content-Type": "application/json" } });
   });
-  const result = await analyzeJob(job(), "data:image/png;base64,test", "test-key", "google/test-model");
+  const result = await analyzeJob(job(), "data:image/png;base64,test", "\uFEFFtest-key \n", "google/test-model");
   assert.equal(result.quoteAud.gst, 25);
   assert.equal(requestBody.model, "google/test-model");
   assert.equal(requestBody.max_tokens, 4000);

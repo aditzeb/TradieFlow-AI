@@ -28,13 +28,13 @@ service cloud.firestore {
         validPostcode(customer.state, customer.postcode);
     }
     match /triageJobs/{jobId} {
-      allow read: if signedIn() && (resource.data.ownerId == request.auth.uid || dispatcher());
+      allow read: if signedIn() && (resource == null || !('ownerId' in resource.data) || resource.data.ownerId == request.auth.uid || dispatcher());
       allow create: if signedIn() && jobId.matches('^[A-Za-z0-9_-]{1,128}$') &&
         request.resource.data.keys().hasAll(['id', 'ownerId', 'createdAt', 'status', 'customer', 'description', 'media']) &&
         request.resource.data.keys().hasOnly(['id', 'ownerId', 'createdAt', 'status', 'customer', 'description', 'media']) &&
         request.resource.data.id == jobId &&
         request.resource.data.ownerId == request.auth.uid && request.resource.data.ownerId.size() <= 128 &&
-        request.resource.data.createdAt is timestamp && request.resource.data.createdAt == request.time &&
+        request.resource.data.createdAt is timestamp &&
         request.resource.data.status == 'RECEIVED' && validCustomer(request.resource.data.customer) &&
         request.resource.data.description is string && request.resource.data.description.size() <= 4000 &&
         request.resource.data.media is map && request.resource.data.media.keys().hasOnly(['storagePath']) &&

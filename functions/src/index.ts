@@ -7,7 +7,7 @@ import { ActiveLeaseError, analyzeJob, claimJob, finishJob, loadJobImage } from 
 initializeApp();
 
 const openRouterApiKey = defineSecret("OPENROUTER_API_KEY");
-const openRouterModel = defineString("OPENROUTER_MODEL", { default: "google/gemini-2.0-flash-001" });
+const openRouterModel = defineString("OPENROUTER_MODEL", { default: "google/gemini-2.5-flash" });
 
 export const processJobTriage = onDocumentCreated({
   document: "triageJobs/{jobId}",
@@ -31,7 +31,7 @@ export const processJobTriage = onDocumentCreated({
     await finishJob(ref, attempt, analysis);
   } catch (error) {
     if (error instanceof ActiveLeaseError) throw error;
-    logError("TRIAGE_PROCESSING_FAILED");
+    logError("TRIAGE_PROCESSING_FAILED", error);
     if (attempt === undefined) {
       const retryError = new Error("TRIAGE_CLAIM_FAILED");
       throw retryError;
